@@ -1,343 +1,174 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOMOKO SOLUTION | Artisan Studio Pro</title>
-    <meta name="description" content="Artisan Studio Pro - Générez des documents administratifs professionnels (CV, lettres) au format A4 avec signature tactile.">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="#" class="logo">
-                <div class="logo-mark">
-                    <span>B</span>
-                </div>
-                <div class="logo-text">
-                    <span class="logo-title">BOMOKO</span>
-                    <span class="logo-sub">SOLUTION</span>
-                </div>
-            </a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#accueil">Accueil</a></li>
-                <li><a href="#fonctionnalites">Fonctionnalités</a></li>
-                <li><a href="#apercu">Aperçu</a></li>
-                <li><a href="#telecharger">Télécharger</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <a href="#telecharger" class="btn-nav">
-                <i class="fas fa-download"></i> Télécharger
-            </a>
-            <div class="menu-toggle" id="menuToggle">
-                <span></span><span></span><span></span>
-            </div>
-        </div>
-    </nav>
+// ============ COMPTEUR DE TÉLÉCHARGEMENTS ============
+async function fetchDownloadCount() {
+    try {
+        // Récupérer les releases depuis l'API GitHub
+        const response = await fetch('https://api.github.com/repos/bomokosolution-scrip/Apps/releases');
+        const releases = await response.json();
+        
+        // Trouver la release la plus récente (v1.0.1-new)
+        const latestRelease = releases[0]; // La première = la plus récente
+        
+        let downloadCount = 0;
+        if (latestRelease && latestRelease.assets) {
+            latestRelease.assets.forEach(asset => {
+                if (asset.name.endsWith('.apk')) {
+                    downloadCount += asset.download_count;
+                }
+            });
+        }
+        
+        // Afficher le total avec animation
+        const countElement = document.getElementById('downloadCount');
+        if (countElement) {
+            animateCount(countElement, 0, downloadCount, 1500);
+        }
+    } catch (error) {
+        console.error('Erreur lors du chargement des téléchargements:', error);
+        const countElement = document.getElementById('downloadCount');
+        if (countElement) countElement.textContent = '10+';
+    }
+}
 
-    <!-- Hero Section -->
-    <section class="hero" id="accueil">
-        <div class="hero-bg">
-            <div class="blob blob-1"></div>
-            <div class="blob blob-2"></div>
-            <div class="grid-overlay"></div>
-        </div>
-        <div class="hero-container">
-            <div class="hero-content">
-                <div class="badge">
-                    <span class="pulse"></span>
-                    Nouvelle version disponible
-                </div>
-                <h1 class="hero-title">
-                    Créez des documents <span class="gradient-text">professionnels</span> en quelques secondes
-                </h1>
-                <p class="hero-subtitle">
-                    <strong>Artisan Studio Pro</strong> vous permet de générer des CV, lettres de motivation et documents administratifs au format A4, avec signature tactile intégrée. Une qualité d'impression irréprochable.
-                </p>
-                <div class="hero-actions">
-                    <a href="#telecharger" class="btn btn-primary">
-                        <i class="fas fa-download"></i> Télécharger l'application
-                    </a>
-                    <a href="#apercu" class="btn btn-secondary">
-                        <i class="fas fa-play"></i> Voir l'aperçu
-                    </a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <h3>100%</h3>
-                        <p>Qualité A4</p>
-                    </div>
-                    <div class="stat">
-                        <h3>+50</h3>
-                        <p>Modèles pro</p>
-                    </div>
-                    <div class="stat">
-                        <h3>PDF</h3>
-                        <p>Export instantané</p>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="phone-mockup">
-                    <div class="phone-frame">
-                        <img src="images/img1.jpg" alt="Artisan Studio Pro interface" onerror="this.src='https://via.placeholder.com/300x600/1a1a2e/ffffff?text=Artisan+Studio+Pro'">
-                    </div>
-                </div>
-                <div class="floating-card card-1">
-                    <i class="fas fa-signature"></i>
-                    <span>Signature tactile</span>
-                </div>
-                <div class="floating-card card-2">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>Export PDF</span>
-                </div>
-            </div>
-        </div>
-    </section>
+// Animation du compteur
+function animateCount(element, start, end, duration) {
+    const startTime = performance.now();
+    
+    function updateCount(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const current = Math.floor(start + (end - start) * progress);
+        element.textContent = current + '+';
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateCount);
+        }
+    }
+    
+    requestAnimationFrame(updateCount);
+}
 
-    <!-- Fonctionnalités -->
-    <section class="features" id="fonctionnalites">
-        <div class="section-container">
-            <div class="section-header">
-                <span class="section-tag">Fonctionnalités</span>
-                <h2>Tout ce dont vous avez besoin</h2>
-                <p>Des outils puissants et intuitifs pour créer des documents qui font la différence.</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
-                    <h3>Modèles Professionnels</h3>
-                    <p>CV, lettres de motivation, attestations, factures et plus encore. Des modèles modernes et élégants prêts à l'emploi.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-signature"></i></div>
-                    <h3>Signature Tactile</h3>
-                    <p>Signez directement sur l'écran de votre appareil avec le doigt ou le stylet. Signature naturelle et précise.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-file-pdf"></i></div>
-                    <h3>Export PDF A4</h3>
-                    <p>Générez des fichiers PDF au format A4 parfaitement calibrés, prêts à imprimer avec une qualité optimale.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-palette"></i></div>
-                    <h3>Personnalisation Totale</h3>
-                    <p>Couleurs, polices, mise en page : adaptez chaque détail pour refléter votre identité professionnelle.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
-                    <h3>Rapide & Léger</h3>
-                    <p>Application optimisée pour fonctionner même sur des appareils modestes, sans ralentissements.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-                    <h3>100% Hors-ligne</h3>
-                    <p>Vos données restent sur votre appareil. Aucune connexion internet requise pour créer vos documents.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+// Lancer au chargement de la page
+document.addEventListener('DOMContentLoaded', fetchDownloadCount);
 
-    <!-- Aperçu -->
-    <section class="preview" id="apercu">
-        <div class="section-container">
-            <div class="section-header">
-                <span class="section-tag">Aperçu</span>
-                <h2>Découvrez l'application</h2>
-                <p>Une interface élégante pensée pour la productivité.</p>
-            </div>
-            <div class="preview-grid">
-                <div class="preview-item">
-                    <img src="images/img1.jpg" alt="Aperçu 1" onerror="this.src='https://via.placeholder.com/400x700/16213e/ffffff?text=Apercu+1'">
-                    <div class="preview-caption">Écran d'accueil</div>
-                </div>
-                <div class="preview-item">
-                    <img src="images/img2.jpg" alt="Aperçu 2" onerror="this.src='https://via.placeholder.com/400x700/0f3460/ffffff?text=Apercu+2'">
-                    <div class="preview-caption">Choix des modèles</div>
-                </div>
-                <div class="preview-item">
-                    <img src="images/img3.jpg" alt="Aperçu 3" onerror="this.src='https://via.placeholder.com/400x700/1a1a2e/ffffff?text=Apercu+3'">
-                    <div class="preview-caption">Édition du document</div>
-                </div>
-                <div class="preview-item">
-                    <img src="images/img4.jpg" alt="Aperçu 4" onerror="this.src='https://via.placeholder.com/400x700/533483/ffffff?text=Apercu+4'">
-                    <div class="preview-caption">Signature tactile</div>
-                </div>
-            </div>
-        </div>
-    </section>
+// ============ NAVBAR SCROLL ============
+const navbar = document.getElementById('navbar');
+const navLinks = document.getElementById('navLinks');
+const menuToggle = document.getElementById('menuToggle');
 
-    <!-- Téléchargement -->
-    <section class="download" id="telecharger">
-        <div class="section-container">
-            <div class="download-card">
-                <div class="download-content">
-                    <span class="section-tag light">Téléchargement</span>
-                    <h2>Obtenez Artisan Studio Pro</h2>
-                    <p>Disponible gratuitement. Installez l'application et commencez à créer des documents professionnels dès maintenant.</p>
-                    <div class="download-info">
-                        <div class="info-item">
-                            <i class="fas fa-mobile-alt"></i>
-                            <div>
-                                <span>Version</span>
-                                <strong>1.0.0</strong>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-hdd"></i>
-                            <div>
-                                <span>Taille</span>
-                                <strong>~ 86 Mo</strong>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <span>Compatibilité</span>
-                                <strong>Android 7+</strong>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="download-buttons">
-                        <a href="https://github.com/bomokosolution-scrip/Apps/releases/download/v1.0.0/Artisan.Studio.Pro.apk" class="btn btn-download" download>
-                            <i class="fas fa-download"></i>
-                            <div>
-                                <span>Télécharger APK</span>
-                                <small>Android · 86 Mo</small>
-                            </div>
-                        </a>
-                        <a href="https://wa.me/+243891989036" target="_blank" rel="noopener" class="btn btn-outline-light">
-                            <i class="fab fa-whatsapp"></i>
-                            Nous contacter
-                        </a>
-                    </div>
-                    <p class="download-note">
-                        <i class="fas fa-shield-alt"></i> Fichier scanné et sécurisé. Aucune donnée personnelle collectée.
-                    </p>
-                </div>
-                <div class="download-visual">
-                    <img src="images/img1.jpg" alt="Artisan Studio Pro" onerror="this.src='https://via.placeholder.com/300x600/ffffff/1a1a2e?text=App'">
-                </div>
-            </div>
-        </div>
-    </section>
+if (navbar) {
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+}
 
-    <!-- Contact -->
-    <section class="contact" id="contact">
-        <div class="section-container">
-            <div class="section-header">
-                <span class="section-tag">Contact</span>
-                <h2>Une question ? Écrivez-nous</h2>
-                <p>Notre équipe vous répond dans les plus brefs délais.</p>
-            </div>
-            <div class="contact-grid">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                        <div>
-                            <span>Email</span>
-                            <a href="mailto:bomokosolution@gmail.com">bomokosolution@gmail.com</a>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon"><i class="fas fa-phone"></i></div>
-                        <div>
-                            <span>Téléphone</span>
-                            <a href="tel:+243891989036">+243 891 989 036</a>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
-                        <div>
-                            <span>WhatsApp</span>
-                            <a href="https://wa.me/+243891989036" target="_blank" rel="noopener">Discuter sur WhatsApp</a>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <div>
-                            <span>Localisation</span>
-                            <strong>Kinshasa, RDC</strong>
-                        </div>
-                    </div>
-                </div>
-                <form class="contact-form" onsubmit="handleSubmit(event)">
-                    <div class="form-group">
-                        <input type="text" placeholder="Votre nom" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="email" placeholder="Votre email" required>
-                    </div>
-                    <div class="form-group">
-                        <textarea rows="5" placeholder="Votre message" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane"></i> Envoyer le message
-                    </button>
-                </form>
-            </div>
-        </div>
-    </section>
+// ============ MENU MOBILE ============
+if (menuToggle && navLinks) {
+    menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+}
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-brand">
-                <div class="logo">
-                    <div class="logo-mark"><span>B</span></div>
-                    <div class="logo-text">
-                        <span class="logo-title">BOMOKO</span>
-                        <span class="logo-sub">SOLUTION</span>
-                    </div>
-                </div>
-                <p>Nous créons des applications innovantes pour simplifier votre quotidien professionnel.</p>
-                <div class="socials">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            <div class="footer-col">
-                <h4>Navigation</h4>
-                <ul>
-                    <li><a href="#accueil">Accueil</a></li>
-                    <li><a href="#fonctionnalites">Fonctionnalités</a></li>
-                    <li><a href="#apercu">Aperçu</a></li>
-                    <li><a href="#telecharger">Télécharger</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Applications</h4>
-                <ul>
-                    <li><a href="https://github.com/bomokosolution-scrip/Apps/releases/tag/v1.0.0" target="_blank" rel="noopener">Artisan Studio Pro</a></li>
-                    <li><a href="#">Bientôt disponible</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Légal</h4>
-                <ul>
-                    <li><a href="#">Mentions légales</a></li>
-                    <li><a href="#">Confidentialité</a></li>
-                    <li><a href="#">Conditions d'utilisation</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 BOMOKO SOLUTION. Tous droits réservés.</p>
-        </div>
-    </footer>
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+        if (navLinks) navLinks.classList.remove('active');
+    });
+});
 
-    <!-- WhatsApp Float -->
-    <a href="https://wa.me/+243891989036" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+// ============ SCROLL REVEAL ============
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
 
-    <script src="script.js"></script>
-</body>
-</html>
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.feature-card, .preview-item, .contact-item, .section-header').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = `opacity 0.6s ease ${i * 0.05}s, transform 0.6s ease ${i * 0.05}s`;
+    observer.observe(el);
+});
+
+// ============ FORMULAIRE ============
+function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-check"></i> Message envoyé !';
+        btn.style.background = 'linear-gradient(135deg, #10b981, #06b6d4)';
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+            btn.disabled = false;
+            e.target.reset();
+        }, 2000);
+    }, 1500);
+}
+
+// ============ SMOOTH SCROLL ============
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href === '#') return;
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+
+// ============ APERÇU LIGHTBOX ============
+document.querySelectorAll('.preview-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const img = item.querySelector('img');
+        const lightbox = document.createElement('div');
+        lightbox.style.cssText = `
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; cursor: zoom-out; padding: 20px;
+            opacity: 0; transition: opacity 0.3s;
+            backdrop-filter: blur(10px);
+        `;
+        const image = document.createElement('img');
+        image.src = img.src;
+        image.style.cssText = `
+            max-width: 90%; max-height: 90%; border-radius: 16px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            transform: scale(0.9); transition: transform 0.3s;
+        `;
+        lightbox.appendChild(image);
+        document.body.appendChild(lightbox);
+        document.body.style.overflow = 'hidden';
+        
+        requestAnimationFrame(() => {
+            lightbox.style.opacity = '1';
+            image.style.transform = 'scale(1)';
+        });
+        
+        lightbox.addEventListener('click', () => {
+            lightbox.style.opacity = '0';
+            image.style.transform = 'scale(0.9)';
+            document.body.style.overflow = '';
+            setTimeout(() => lightbox.remove(), 300);
+        });
+    });
+});
