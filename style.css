@@ -683,10 +683,15 @@ ul { list-style: none; }
     max-width: 500px;
 }
 
+.download-content > p strong {
+    color: white;
+    font-weight: 700;
+}
+
 .download-info {
     display: flex;
     gap: 24px;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
     flex-wrap: wrap;
 }
 
@@ -722,6 +727,38 @@ ul { list-style: none; }
     font-weight: 600;
 }
 
+/* ============ PLATEFORMES ============ */
+.platforms {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.platform-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.platform-item i {
+    font-size: 16px;
+    color: var(--accent);
+}
+
+.platform-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
 .download-buttons {
     display: flex;
     gap: 16px;
@@ -745,6 +782,24 @@ ul { list-style: none; }
 .btn-download div { display: flex; flex-direction: column; line-height: 1.2; }
 .btn-download span { font-weight: 700; font-size: 15px; }
 .btn-download small { font-size: 11px; opacity: 0.6; font-weight: 500; }
+
+/* Bouton Utiliser en ligne */
+.btn-online {
+    background: linear-gradient(135deg, #06b6d4, #6366f1);
+    color: white;
+    padding: 14px 28px;
+    box-shadow: 0 10px 30px rgba(6, 182, 212, 0.35);
+}
+
+.btn-online:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(6, 182, 212, 0.5);
+}
+
+.btn-online i { font-size: 20px; }
+.btn-online div { display: flex; flex-direction: column; line-height: 1.2; }
+.btn-online span { font-weight: 700; font-size: 15px; }
+.btn-online small { font-size: 11px; opacity: 0.75; font-weight: 500; }
 
 .btn-outline-light {
     background: transparent;
@@ -1032,6 +1087,9 @@ ul { list-style: none; }
     .download-content h2 { font-size: 28px; }
     .download-buttons { flex-direction: column; }
     .download-buttons .btn { width: 100%; justify-content: center; }
+    .platforms { justify-content: center; gap: 8px; }
+    .platform-item { padding: 6px 12px; font-size: 12px; }
+    .platform-item i { font-size: 14px; }
     .preview-item img { height: 360px; }
     .footer-container { grid-template-columns: 1fr; gap: 32px; }
     .floating-card { display: none; }
