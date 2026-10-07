@@ -1,53 +1,46 @@
 // ============ COMPTEUR DE TÉLÉCHARGEMENTS ============
 async function fetchDownloadCount() {
     try {
-        // Récupérer les releases depuis l'API GitHub
         const response = await fetch('https://api.github.com/repos/bomokosolution-scrip/Apps/releases');
         const releases = await response.json();
         
-        // Trouver la release la plus récente (v1.0.1-new)
-        const latestRelease = releases[0]; // La première = la plus récente
+        // ⚠️ Cibler EXPLICITEMENT la release v1.0.2
+        const targetRelease = releases.find(r => r.tag_name === 'v1.0.2');
         
         let downloadCount = 0;
-        if (latestRelease && latestRelease.assets) {
-            latestRelease.assets.forEach(asset => {
+        if (targetRelease && targetRelease.assets) {
+            targetRelease.assets.forEach(asset => {
                 if (asset.name.endsWith('.apk')) {
                     downloadCount += asset.download_count;
                 }
             });
         }
         
-        // Afficher le total avec animation
         const countElement = document.getElementById('downloadCount');
         if (countElement) {
             animateCount(countElement, 0, downloadCount, 1500);
         }
     } catch (error) {
-        console.error('Erreur lors du chargement des téléchargements:', error);
+        console.error('Erreur:', error);
         const countElement = document.getElementById('downloadCount');
         if (countElement) countElement.textContent = '10+';
     }
 }
 
-// Animation du compteur
 function animateCount(element, start, end, duration) {
     const startTime = performance.now();
-    
     function updateCount(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const current = Math.floor(start + (end - start) * progress);
         element.textContent = current + '+';
-        
         if (progress < 1) {
             requestAnimationFrame(updateCount);
         }
     }
-    
     requestAnimationFrame(updateCount);
 }
 
-// Lancer au chargement de la page
 document.addEventListener('DOMContentLoaded', fetchDownloadCount);
 
 // ============ NAVBAR SCROLL ============
